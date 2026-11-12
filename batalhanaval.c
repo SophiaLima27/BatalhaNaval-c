@@ -6,7 +6,7 @@ int main() {
 
     char jogador1[30];
     char jogador2[30];
-    \\ cadastro dos jogadores
+   
     printf("digite o nome do primeiro jogador: ");
     fgets(jogador1, sizeof(jogador1), stdin);
     jogador1[strcspn(jogador1, "\n")] = '\0';
@@ -17,11 +17,7 @@ int main() {
 
     printf("jogadores cadastrados %s vs %s \n", jogador1, jogador2);
 
-    \\ parte2 posicionar os navios
-    printf("o jogador %s: deve posicionar os navios.", jogador1);
-
-    printf("agora o jogador %s: deve posicionar os navios", jogador2);
-
+    
     int a, b;
     int tamanho = 9;
 
@@ -63,6 +59,41 @@ int main() {
         }
         printf("\n");
     }
+
+    int linha, coluna;
+    char direcao;
+    int tamNavio = 3; 
+
+    
+    printf("\n%s, posicione seu navio de tamanho %d\n", jogador1, tamNavio);
+    printf("Digite a linha, coluna e direcao (h para horizontal / v para vertical): ");
+    if (scanf("%d %d %c", &linha, &coluna, &direcao) == 3) {
+        if ((direcao == 'h') && (coluna + tamNavio <= tamanho)) {
+            for (int i = 0; i < tamNavio; i++) {
+                tabuNavios[linha][coluna + i] = 'N';
+            }
+        } else if ((direcao == 'v') && (linha + tamNavio <= tamanho)) {
+            for (int i = 0; i < tamNavio; i++) {
+                tabuNavios[linha + i][coluna] = 'N';
+            }
+        }
+    }
+
+    printf("\n%s, posicione seu navio de tamanho %d\n", jogador2, tamNavio);
+    printf("Digite a linha (0-8), coluna (0-8) e orientacao (H para horizontal / V para vertical): ");
+    if (scanf("%d %d %c", &linha, &coluna, &direcao) == 3) {
+        if ((direcao == 'h') && (coluna + tamNavio <= tamanho)) {
+            for (int i = 0; i < tamNavio; i++) {
+                tabuNavios2[linha][coluna + i] = 'N';
+            }
+        } else if ((direcao == 'v') && (linha + tamNavio <= tamanho)) {
+            for (int i = 0; i < tamNavio; i++) {
+                tabuNavios2[linha + i][coluna] = 'N';
+            }
+        }
+    }
+    
+   
 
 
     return 0;
