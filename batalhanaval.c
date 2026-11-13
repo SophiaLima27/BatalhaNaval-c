@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 int main() {
     printf("Batalha Naval\n");
@@ -16,16 +17,17 @@ int main() {
     jogador2[strcspn(jogador2, "\n")] = '\0';
 
     printf("jogadores cadastrados %s vs %s \n", jogador1, jogador2);
-
     
-    int a, b;
+    int a, b, i;
     int tamanho = 9;
 
     char tabuNavios[9][9];
     char tabTiros[9][9];
     char tabuNavios2[9][9];
     char tabTiros2[9][9];
-
+    
+    int meusBarcos[9][9] = {0};
+    int meusBarcos2[9][9] = {0};
     
     for(a = 0; a < tamanho; a++) {
         for(b = 0; b < tamanho; b++) {
@@ -36,65 +38,113 @@ int main() {
         }
     }
 
-    
-    printf("--- TABULEIRO DE %s ---\n", jogador1);
-    printf("  0 1 2 3 4 5 6 7 8\n");
-    for(a = 0; a < tamanho; a++) {
-        printf("%d ", a);
-        for(b = 0; b < tamanho; b++) {
-            printf("%c ", tabuNavios[a][b]);
-        }
-        printf("\n");
-    }
-
-    printf("======================================\n\n");
-
-    
-    printf("--- TABULEIRO DE %s ---\n", jogador2);
-    printf("  0 1 2 3 4 5 6 7 8\n");
-    for(a = 0; a < tamanho; a++) {
-        printf("%d ", a);
-        for(b = 0; b < tamanho; b++) {
-            printf("%c ", tabuNavios2[a][b]);
-        }
-        printf("\n");
-    }
-
     int linha, coluna;
-    char direcao;
-    int tamNavio = 3; 
 
-    
-    printf("\n%s, posicione seu navio de tamanho %d\n", jogador1, tamNavio);
-    printf("Digite a linha, coluna e direcao (h para horizontal / v para vertical): ");
-    if (scanf("%d %d %c", &linha, &coluna, &direcao) == 3) {
-        if ((direcao == 'h') && (coluna + tamNavio <= tamanho)) {
-            for (int i = 0; i < tamNavio; i++) {
-                tabuNavios[linha][coluna + i] = 'N';
+    printf("\n%s, posicione seus 5 barcos (tamanho 1)\n", jogador1);
+    for (i = 0; i < 5; i++) {
+        printf("Barco %d - Digite a linha e coluna (0-8): ", i + 1);
+        scanf("%d %d", &linha, &coluna);
+        if (linha >= 0 && linha < tamanho && coluna >= 0 && coluna < tamanho) {
+            if (meusBarcos[linha][coluna] == 0) {
+                meusBarcos[linha][coluna] = 1;
+            } else {
+                printf("Ja tem um barco nessa posicao! Escolha outra.\n");
+                i--;
             }
-        } else if ((direcao == 'v') && (linha + tamNavio <= tamanho)) {
-            for (int i = 0; i < tamNavio; i++) {
-                tabuNavios[linha + i][coluna] = 'N';
+        } else {
+            printf("Posicao invalida! Tente novamente.\n");
+            i--; 
+        }
+    }
+
+    system("cls");
+
+    printf("\n%s, posicione seus 5 barcos (tamanho 1)\n", jogador2);
+    for (i = 0; i < 5; i++) {
+        printf("Barco %d - Digite a linha e coluna (0-8): ", i + 1);
+        if (scanf("%d %d", &linha, &coluna) == 2) {
+            if (linha >= 0 && linha < tamanho && coluna >= 0 && coluna < tamanho) {
+                if (meusBarcos2[linha][coluna] == 0) {
+                    meusBarcos2[linha][coluna] = 1;
+                } else {
+                    printf("Ja tem um barco nessa posicao! Escolha outra.\n");
+                    i--;
+                }
+            } else {
+                printf("Posicao invalida! Tente novamente.\n");
+                i--; 
             }
         }
     }
 
-    printf("\n%s, posicione seu navio de tamanho %d\n", jogador2, tamNavio);
-    printf("Digite a linha (0-8), coluna (0-8) e orientacao (H para horizontal / V para vertical): ");
-    if (scanf("%d %d %c", &linha, &coluna, &direcao) == 3) {
-        if ((direcao == 'h') && (coluna + tamNavio <= tamanho)) {
-            for (int i = 0; i < tamNavio; i++) {
-                tabuNavios2[linha][coluna + i] = 'N';
+    system("cls");
+
+    int acertos1 = 0;
+    int acertos2 = 0;
+
+    while (acertos1 < 5 && acertos2 < 5) {
+        printf("\n--- VEZ DE %s ATIRAR ---\n", jogador1);
+        printf("Seu tabuleiro de tiros:\n");
+        printf("  0 1 2 3 4 5 6 7 8\n");
+        for(a = 0; a < tamanho; a++) {
+            printf("%d ", a);
+            for(b = 0; b < tamanho; b++) {
+                printf("%c ", tabTiros[a][b]);
             }
-        } else if ((direcao == 'v') && (linha + tamNavio <= tamanho)) {
-            for (int i = 0; i < tamNavio; i++) {
-                tabuNavios2[linha + i][coluna] = 'N';
-            }
+            printf("\n");
         }
+
+        printf("Digite a linha e coluna para atirar (0-8): ");
+        scanf("%d %d", &linha, &coluna);
+
+        if (linha >= 0 && linha < tamanho && coluna >= 0 && coluna < tamanho) {
+            if (meusBarcos2[linha][coluna] == 1) {
+                tabTiros[linha][coluna] = 'V';
+                acertos1++;
+                printf("Voce acertou um barco!\n");
+            } else {
+                tabTiros[linha][coluna] = 'X';
+                printf("Voce errou (tiro na agua)!\n");
+            }
+        } else {
+            printf("Posicao invalida!\n");
+        }
+
+        printf("\n--- VEZ DE %s ATIRAR ---\n", jogador2);
+        printf("Seu tabuleiro de tiros:\n");
+        printf("  0 1 2 3 4 5 6 7 8\n");
+        for(a = 0; a < tamanho; a++) {
+            printf("%d ", a);
+            for(b = 0; b < tamanho; b++) {
+                printf("%c ", tabTiros2[a][b]);
+            }
+            printf("\n");
+        }
+
+        printf("Digite a linha e coluna para atirar (0-8): ");
+        scanf("%d %d", &linha, &coluna);
+
+        if (linha >= 0 && linha < tamanho && coluna >= 0 && coluna < tamanho) {
+            if (meusBarcos[linha][coluna] == 1) {
+                tabTiros2[linha][coluna] = 'V';
+                acertos2++;
+                printf("Voce acertou um barco!\n");
+            } else {
+                tabTiros2[linha][coluna] = 'X';
+                printf("Voce errou (tiro na agua)!\n");
+            }
+        } else {
+            printf("Posicao invalida!\n");
+        }
+
+        system("cls");
+    }
+
+    if (acertos1 == 5) {
+        printf("PARABENS %s! Voce destruiu todos os barcos e venceu o jogo!\n", jogador1);
+    } else {
+        printf("PARABENS %s! Voce destruiu todos os barcos e venceu o jogo!\n", jogador2);
     }
     
-   
-
-
     return 0;
 }
