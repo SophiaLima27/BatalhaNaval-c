@@ -8,15 +8,15 @@ int main() {
     char jogador1[30];
     char jogador2[30];
    
-    printf("digite o nome do primeiro jogador: ");
+    printf("Digite o nome do primeiro jogador: ");
     fgets(jogador1, sizeof(jogador1), stdin);
     jogador1[strcspn(jogador1, "\n")] = '\0';
 
-    printf("digite o nome do segundo jogador: ");
+    printf("Digite o nome do segundo jogador: ");
     fgets(jogador2, sizeof(jogador2), stdin);
     jogador2[strcspn(jogador2, "\n")] = '\0';
 
-    printf("jogadores cadastrados %s vs %s \n", jogador1, jogador2);
+    printf("Jogadores cadastrados: %s vs %s \n", jogador1, jogador2);
     
     int a, b, i;
     int tamanho = 9;
@@ -43,7 +43,13 @@ int main() {
     printf("\n%s, posicione seus 5 barcos (tamanho 1)\n", jogador1);
     for (i = 0; i < 5; i++) {
         printf("Barco %d - Digite a linha e coluna (0-8): ", i + 1);
-        scanf("%d %d", &linha, &coluna);
+        if (scanf("%d %d", &linha, &coluna) != 2) {
+            printf("Entrada invalida! Digite apenas numeros.\n");
+            while(getchar() != '\n'); 
+            i--;
+            continue;
+        }
+
         if (linha >= 0 && linha < tamanho && coluna >= 0 && coluna < tamanho) {
             if (meusBarcos[linha][coluna] == 0) {
                 meusBarcos[linha][coluna] = 1;
@@ -62,18 +68,23 @@ int main() {
     printf("\n%s, posicione seus 5 barcos (tamanho 1)\n", jogador2);
     for (i = 0; i < 5; i++) {
         printf("Barco %d - Digite a linha e coluna (0-8): ", i + 1);
-        if (scanf("%d %d", &linha, &coluna) == 2) {
-            if (linha >= 0 && linha < tamanho && coluna >= 0 && coluna < tamanho) {
-                if (meusBarcos2[linha][coluna] == 0) {
-                    meusBarcos2[linha][coluna] = 1;
-                } else {
-                    printf("Ja tem um barco nessa posicao! Escolha outra.\n");
-                    i--;
-                }
+        if (scanf("%d %d", &linha, &coluna) != 2) {
+            printf("Entrada invalida! Digite apenas numeros.\n");
+            while(getchar() != '\n'); 
+            i--;
+            continue;
+        }
+
+        if (linha >= 0 && linha < tamanho && coluna >= 0 && coluna < tamanho) {
+            if (meusBarcos2[linha][coluna] == 0) {
+                meusBarcos2[linha][coluna] = 1;
             } else {
-                printf("Posicao invalida! Tente novamente.\n");
-                i--; 
+                printf("Ja tem um barco nessa posicao! Escolha outra.\n");
+                i--;
             }
+        } else {
+            printf("Posicao invalida! Tente novamente.\n");
+            i--; 
         }
     }
 
@@ -81,6 +92,7 @@ int main() {
 
     int acertos1 = 0;
     int acertos2 = 0;
+    int tiroValido;
 
     while (acertos1 < 5 && acertos2 < 5) {
         printf("\n--- VEZ DE %s ATIRAR ---\n", jogador1);
@@ -94,20 +106,36 @@ int main() {
             printf("\n");
         }
 
-        printf("Digite a linha e coluna para atirar (0-8): ");
-        scanf("%d %d", &linha, &coluna);
-
-        if (linha >= 0 && linha < tamanho && coluna >= 0 && coluna < tamanho) {
-            if (meusBarcos2[linha][coluna] == 1) {
-                tabTiros[linha][coluna] = 'V';
-                acertos1++;
-                printf("Voce acertou um barco!\n");
-            } else {
-                tabTiros[linha][coluna] = 'X';
-                printf("Voce errou (tiro na agua)!\n");
+        tiroValido = 0;
+        while (!tiroValido) {
+            printf("Digite a linha e coluna para atirar (0-8): ");
+            if (scanf("%d %d", &linha, &coluna) != 2) {
+                printf("Entrada invalida! Digite apenas numeros.\n");
+                while(getchar() != '\n');
+                continue;
             }
-        } else {
-            printf("Posicao invalida!\n");
+
+            if (linha >= 0 && linha < tamanho && coluna >= 0 && coluna < tamanho) {
+                if (tabTiros[linha][coluna] != '~') {
+                    printf("Voce ja atirou nessa posicao! Escolha outra.\n");
+                } else {
+                    tiroValido = 1;
+                    if (meusBarcos2[linha][coluna] == 1) {
+                        tabTiros[linha][coluna] = 'V';
+                        acertos1++;
+                        printf("Voce acertou um barco!\n");
+                    } else {
+                        tabTiros[linha][coluna] = 'X';
+                        printf("Voce errou (tiro na agua)!\n");
+                    }
+                }
+            } else {
+                printf("Posicao invalida! Tente novamente.\n");
+            }
+        }
+
+        if (acertos1 == 5) {
+            break;
         }
 
         printf("\n--- VEZ DE %s ATIRAR ---\n", jogador2);
@@ -121,25 +149,36 @@ int main() {
             printf("\n");
         }
 
-        printf("Digite a linha e coluna para atirar (0-8): ");
-        scanf("%d %d", &linha, &coluna);
-
-        if (linha >= 0 && linha < tamanho && coluna >= 0 && coluna < tamanho) {
-            if (meusBarcos[linha][coluna] == 1) {
-                tabTiros2[linha][coluna] = 'V';
-                acertos2++;
-                printf("Voce acertou um barco!\n");
-            } else {
-                tabTiros2[linha][coluna] = 'X';
-                printf("Voce errou (tiro na agua)!\n");
+        tiroValido = 0;
+        while (!tiroValido) {
+            printf("Digite a linha e coluna para atirar (0-8): ");
+            if (scanf("%d %d", &linha, &coluna) != 2) {
+                printf("Entrada invalida! Digite apenas numeros.\n");
+                while(getchar() != '\n');
+                continue;
             }
-        } else {
-            printf("Posicao invalida!\n");
+
+            if (linha >= 0 && linha < tamanho && coluna >= 0 && coluna < tamanho) {
+                if (tabTiros2[linha][coluna] != '~') {
+                    printf("Voce ja atirou nessa posicao! Escolha outra.\n");
+                } else {
+                    tiroValido = 1;
+                    if (meusBarcos[linha][coluna] == 1) {
+                        tabTiros2[linha][coluna] = 'V';
+                        acertos2++;
+                    } else {
+                        tabTiros2[linha][coluna] = 'X';
+                    }
+                }
+            } else {
+                printf("Posicao invalida! Tente novamente.\n");
+            }
         }
 
         system("cls");
     }
 
+    system("cls");
     if (acertos1 == 5) {
         printf("PARABENS %s! Voce destruiu todos os barcos e venceu o jogo!\n", jogador1);
     } else {
